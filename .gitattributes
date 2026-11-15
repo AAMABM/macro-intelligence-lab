@@ -1,0 +1,23 @@
+# Normalise all text files to LF in the repository, on every OS.
+# Checkout on Windows converts back to CRLF only if needed by an editor.
+* text=auto eol=lf
+
+# Binary — never touch line endings
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.docx binary
+*.xlsx binary
+*.pptx binary
+*.zip binary
+
+# Explicitly LF for files that must be LF even on Windows
+*.sh text eol=lf
+Dockerfile text eol=lf
+Makefile text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf

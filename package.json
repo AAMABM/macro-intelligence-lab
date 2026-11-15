@@ -1,0 +1,16 @@
+{
+  "name": "macro-intelligence-lab",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@9.12.0",
+  "engines": {
+    "node": ">=20.10.0"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @mil/web dev",
+    "build": "pnpm --filter @mil/web build",
+    "lint": "pnpm -r --if-present lint",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "test": "pnpm -r --if-present test"
+  }
+}

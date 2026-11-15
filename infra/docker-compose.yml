@@ -1,0 +1,107 @@
+name: macro-intelligence-lab
+
+x-api-env: &api-env
+  MIL_ENV: development
+  MIL_LOG_LEVEL: DEBUG
+  MIL_DATABASE_URL: postgresql+asyncpg://mil:mil@postgres:5432/mil
+  MIL_DATABASE_POOL_SIZE: "5"
+  MIL_DATABASE_MAX_OVERFLOW: "5"
+  MIL_DATABASE_STATEMENT_CACHE_SIZE: "100"
+  MIL_JWT_SECRET: local-dev-secret-change-me-32-chars-min
+  MIL_JWT_ALGORITHM: HS256
+  MIL_JWT_ACCESS_TTL_SECONDS: "900"
+  MIL_JWT_REFRESH_TTL_SECONDS: "1209600"
+  MIL_CORS_ORIGINS: '["http://localhost:5173"]'
+
+services:
+  postgres:
+    image: postgres:16.4-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: mil
+      POSTGRES_PASSWORD: mil
+      POSTGRES_DB: mil
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mil -d mil"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  migrate:
+    build:
+      context: ../apps/api
+      target: api
+    command: ["alembic", "upgrade", "head"]
+    environment: *api-env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  api:
+    build:
+      context: ../apps/api
+      target: api
+    command:
+      - uvicorn
+      - macro_api.main:app
+      - --host=0.0.0.0
+      - --port=8000
+      - --reload
+      - --proxy-headers
+      - --forwarded-allow-ips=*
+    environment: *api-env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../apps/api/src:/app/src
+      - ../apps/api/alembic:/app/alembic
+      - ../apps/api/scripts:/app/scripts
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/api/v1/health/live"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 20s
+
+  # Worker reserved for Sprint 3 (ETL / forecasts).
+  # Enable with: docker compose --profile worker run --rm worker ...
+  worker:
+    build:
+      context: ../apps/api
+      target: worker
+    environment: *api-env
+    volumes:
+      - ../apps/api/src:/app/src
+      - ../apps/api/scripts:/app/scripts
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    profiles: ["worker"]
+
+  web:
+    build:
+      context: ..
+      dockerfile: apps/web/Dockerfile
+    environment:
+      VITE_API_URL: http://localhost:8000/api/v1
+    ports:
+      - "5173:5173"
+    volumes:
+      - ../apps/web/src:/app/apps/web/src
+      - ../apps/web/index.html:/app/apps/web/index.html
+      - ../apps/web/public:/app/apps/web/public
+      - ../packages:/app/packages
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  pgdata:
