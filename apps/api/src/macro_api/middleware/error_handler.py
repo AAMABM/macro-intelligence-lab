@@ -2,6 +2,7 @@
 
 import logging
 from collections.abc import Awaitable, Callable
+from typing import Any
 
 from fastapi import Request
 from fastapi.exceptions import RequestValidationError
@@ -69,7 +70,7 @@ def _error_response(
     status: int,
     code: str,
     message: str,
-    details: dict,
+    details: dict[str, Any],
     log_level: str,
 ) -> JSONResponse:
     request_id = getattr(request.state, "request_id", "") or ""

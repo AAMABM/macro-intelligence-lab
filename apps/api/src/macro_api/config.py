@@ -64,4 +64,4 @@ def get_settings() -> Settings:
     this repeatedly inside a request would be wasteful. Use
     ``get_settings.cache_clear()`` in tests after changing env vars.
     """
-    return Settings()  # type: ignore[call-arg]
+     return Settings()
