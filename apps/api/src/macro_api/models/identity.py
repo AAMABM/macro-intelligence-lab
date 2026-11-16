@@ -83,6 +83,7 @@ class UserPreferences(Base, Timestamps):
     theme: Mapped[str] = mapped_column(
         String(20), default="dark", server_default="dark", nullable=False
     )
+    default_region: Mapped[str | None] = mapped_column(String(20))
     default_dashboard_id: Mapped[str | None] = mapped_column(UUID(as_uuid=False))
     default_landing_route: Mapped[str] = mapped_column(
         String(120),
