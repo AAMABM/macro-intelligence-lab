@@ -19,10 +19,10 @@ from sqlalchemy.pool import StaticPool
 
 from macro_api.config import Settings, get_settings
 from macro_api.core.db import get_session
+from macro_api.core.security import hash_password
 from macro_api.main import create_app
 from macro_api.models import Base
 from macro_api.models.identity import User, UserPreferences, UserRole, UserStatus
-from macro_api.core.security import hash_password
 
 
 @pytest.fixture(autouse=True)
@@ -57,16 +57,17 @@ async def engine():
 
     # Adapt Postgres types for SQLite by re-registering models against a
     # temp metadata.
-    from sqlalchemy.dialects.sqlite import JSON as SQLiteJSON  # noqa: PLC0415
-    from sqlalchemy import String, Text  # noqa: PLC0415
-    from macro_api.models import identity as idmod  # noqa: PLC0415
+    from sqlalchemy import String, Text
+    from sqlalchemy.dialects.sqlite import JSON
+
+    from macro_api.models import identity as idmod
 
     # Monkey-patch the column types at the SQLAlchemy type level.
     idmod.User.__table__.c.email.type = Text()
     idmod.User.__table__.c.id.type = String(36)
     idmod.UserPreferences.__table__.c.user_id.type = String(36)
     idmod.UserPreferences.__table__.c.default_dashboard_id.type = String(36)
-    idmod.UserPreferences.__table__.c.notifications.type = SQLiteJSON()
+    idmod.UserPreferences.__table__.c.notifications.type = JSON()
     idmod.RefreshToken.__table__.c.id.type = String(36)
     idmod.RefreshToken.__table__.c.user_id.type = String(36)
     idmod.RefreshToken.__table__.c.family_id.type = String(36)
@@ -77,9 +78,8 @@ async def engine():
     idmod.EmailVerificationToken.__table__.c.user_id.type = String(36)
 
     # Enums → String on SQLite
-    from sqlalchemy import String as _S  # noqa: PLC0415
-    idmod.User.__table__.c.role.type = _S(20)
-    idmod.User.__table__.c.status.type = _S(20)
+    idmod.User.__table__.c.role.type = String(20)
+    idmod.User.__table__.c.status.type = String(20)
 
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)

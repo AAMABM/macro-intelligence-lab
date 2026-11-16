@@ -38,7 +38,9 @@ from macro_api.repositories.users import (
     UserRepository,
 )
 from macro_api.schemas.auth import AuthResponse, TokenPair
-from macro_api.schemas.user import UserDetail, UserRole as SchemaUserRole, UserStatus as SchemaUserStatus
+from macro_api.schemas.user import UserDetail
+from macro_api.schemas.user import UserRole as SchemaUserRole
+from macro_api.schemas.user import UserStatus as SchemaUserStatus
 
 log = logging.getLogger(__name__)
 

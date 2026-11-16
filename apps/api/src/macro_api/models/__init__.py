@@ -15,9 +15,9 @@ from macro_api.models.identity import (
 
 __all__ = [
     "Base",
+    "EmailVerificationToken",
+    "PasswordResetToken",
+    "RefreshToken",
     "User",
     "UserPreferences",
-    "RefreshToken",
-    "PasswordResetToken",
-    "EmailVerificationToken",
 ]

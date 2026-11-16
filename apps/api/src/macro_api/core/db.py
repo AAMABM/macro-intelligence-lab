@@ -47,7 +47,7 @@ def get_engine() -> AsyncEngine:
 def get_session_factory() -> async_sessionmaker[AsyncSession]:
     """Return the session factory, initialising the engine if needed."""
     get_engine()  # ensure initialised
-    assert _session_factory is not None  # noqa: S101 - invariant
+    assert _session_factory is not None
     return _session_factory
 
 
