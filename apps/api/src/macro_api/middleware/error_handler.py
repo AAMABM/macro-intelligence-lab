@@ -60,9 +60,12 @@ class ErrorHandlerMiddleware(BaseHTTPMiddleware):
         try:
             return await call_next(request)
         except AppError as exc:
+            request_id = getattr(request.state, "request_id", None)
             log.warning(
-                "%s: %s", exc.code, exc.message,
-                extra={"request_id": getattr(request.state, "request_id", None), "status": exc.status_code},
+                "%s: %s",
+                exc.code,
+                exc.message,
+                extra={"request_id": request_id, "status": exc.status_code},
             )
             return _envelope(
                 request, status=exc.status_code, code=exc.code,
@@ -78,13 +81,16 @@ class ErrorHandlerMiddleware(BaseHTTPMiddleware):
                 message=ValidationError.message, details=errors,
             )
         except BaseExceptionGroup as eg:
-            # Starlette's BaseHTTPMiddleware wraps exceptions in ExceptionGroup.
-            # Unwrap to find any AppError underneath.
+            # Starlette's BaseHTTPMiddleware wraps exceptions in ExceptionGroup
+            # (Python 3.11+). Unwrap to find any AppError underneath.
             app_exc = _find_app_error(eg)
             if app_exc is not None:
+                request_id = getattr(request.state, "request_id", None)
                 log.warning(
-                    "%s: %s (via ExceptionGroup)", app_exc.code, app_exc.message,
-                    extra={"request_id": getattr(request.state, "request_id", None), "status": app_exc.status_code},
+                    "%s: %s (via ExceptionGroup)",
+                    app_exc.code,
+                    app_exc.message,
+                    extra={"request_id": request_id, "status": app_exc.status_code},
                 )
                 return _envelope(
                     request, status=app_exc.status_code, code=app_exc.code,
