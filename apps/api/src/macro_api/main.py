@@ -2,7 +2,7 @@
 
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
-from typing import Any
+from typing import Any, cast
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
@@ -42,21 +42,26 @@ def _envelope_response(
     return JSONResponse(status_code=status, content=body.model_dump(by_alias=True))
 
 
-async def _handle_app_error(request: Request, exc: AppError) -> JSONResponse:
+async def _handle_app_error(request: Request, exc: Exception) -> JSONResponse:
+    # Registration on `AppError` guarantees the runtime type; the cast tells
+    # mypy the same thing, since Starlette's handler type is invariant on
+    # `Exception` and rejects narrower types otherwise.
+    app_exc = cast("AppError", exc)
     return _envelope_response(
         request=request,
-        status=exc.status_code,
-        code=exc.code,
-        message=exc.message,
-        details=exc.details,
+        status=app_exc.status_code,
+        code=app_exc.code,
+        message=app_exc.message,
+        details=app_exc.details,
     )
 
 
 async def _handle_validation_error(
-    request: Request, exc: RequestValidationError
+    request: Request, exc: Exception
 ) -> JSONResponse:
+    val_exc = cast("RequestValidationError", exc)
     errors: dict[str, list[str]] = {}
-    for err in exc.errors():
+    for err in val_exc.errors():
         loc = ".".join(str(p) for p in err["loc"] if p != "body") or "body"
         errors.setdefault(loc, []).append(err["msg"])
     return _envelope_response(
