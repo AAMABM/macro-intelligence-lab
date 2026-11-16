@@ -4,7 +4,7 @@ import hashlib
 import secrets
 import uuid
 from datetime import UTC, datetime, timedelta
-from typing import Any, Literal
+from typing import Any, Literal, cast
 
 import jwt
 from argon2 import PasswordHasher
@@ -76,7 +76,7 @@ def decode_access_token(token: str) -> dict[str, Any]:
     if payload.get("typ") != ACCESS_TOKEN_TYPE:
         msg = "Not an access token"
         raise jwt.InvalidTokenError(msg)
-    return payload
+    return cast("dict[str, Any]", payload)
 
 
 # --- Refresh tokens ------------------------------------------------------

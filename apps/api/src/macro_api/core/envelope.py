@@ -1,7 +1,7 @@
 """Response envelope and pagination types."""
 
 from datetime import UTC, datetime
-from typing import Generic, TypeVar
+from typing import Any, Generic, TypeVar
 
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
@@ -47,7 +47,7 @@ class Page(CamelModel, Generic[T]):
 class ErrorBody(CamelModel):
     code: str
     message: str
-    details: dict = Field(default_factory=dict)
+    details: dict[str, Any] = Field(default_factory=dict)
     request_id: str
 
 

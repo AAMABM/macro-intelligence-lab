@@ -7,12 +7,14 @@ from typing import Any
 from sqlalchemy import (
     Boolean,
     DateTime,
-    Enum as SAEnum,
     ForeignKey,
     Index,
     String,
     Text,
     func,
+)
+from sqlalchemy import (
+    Enum as SAEnum,
 )
 from sqlalchemy.dialects.postgresql import CITEXT, JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -84,7 +86,10 @@ class UserPreferences(Base, Timestamps):
     default_region: Mapped[str | None] = mapped_column(String(20))
     default_dashboard_id: Mapped[str | None] = mapped_column(UUID(as_uuid=False))
     default_landing_route: Mapped[str] = mapped_column(
-        String(120), default="/terminal/dashboard", server_default="/terminal/dashboard", nullable=False
+        String(120),
+        default="/terminal/dashboard",
+        server_default="/terminal/dashboard",
+        nullable=False,
     )
     notifications: Mapped[dict[str, Any]] = mapped_column(
         JSONB, default=dict, server_default="{}", nullable=False

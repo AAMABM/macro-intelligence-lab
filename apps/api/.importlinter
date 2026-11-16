@@ -1,5 +1,6 @@
 [importlinter]
 root_package = macro_api
+include_external_packages = True
 
 [importlinter:contract:layers]
 name = Layered architecture (routers → services → repositories → models)

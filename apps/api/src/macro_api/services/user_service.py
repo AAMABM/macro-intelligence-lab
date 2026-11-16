@@ -7,7 +7,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from macro_api.core.errors import ForbiddenError, NotFoundError, UnauthorizedError
 from macro_api.models.identity import User, UserStatus
 from macro_api.repositories.users import UserRepository
-from macro_api.schemas.user import CurrentUser, UserDetail, UserRole, UserStatus as SchemaUserStatus
+from macro_api.schemas.user import CurrentUser, UserDetail, UserRole
+from macro_api.schemas.user import UserStatus as SchemaUserStatus
 
 log = logging.getLogger(__name__)
 
