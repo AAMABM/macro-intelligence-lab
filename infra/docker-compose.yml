@@ -12,6 +12,7 @@ x-api-env: &api-env
   MIL_JWT_ACCESS_TTL_SECONDS: "900"
   MIL_JWT_REFRESH_TTL_SECONDS: "1209600"
   MIL_CORS_ORIGINS: '["http://localhost:5173"]'
+  MIL_FRED_API_KEY: "b5e961ade15e5f1f07448a24f497dd03"
 
 services:
   postgres:

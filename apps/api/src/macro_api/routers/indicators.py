@@ -8,6 +8,11 @@ from macro_api.core.envelope import Envelope, Meta, Page, PageMeta
 from macro_api.routers.deps import DB
 from macro_api.schemas.indicator import IndicatorDetail, IndicatorSummary
 from macro_api.services.indicator_service import IndicatorService
+from macro_api.schemas.indicator import (
+    IndicatorDetail, 
+    IndicatorSummary, 
+    SeriesResponse,
+)
 
 router = APIRouter(prefix="/indicators", tags=["indicators"])
 
@@ -37,3 +42,15 @@ async def get_indicator(
     service = IndicatorService(db)
     indicator = await service.get_indicator(code)
     return Envelope(data=indicator, meta=_meta(request))
+
+@router.get("/{code}/series", response_model=Envelope[SeriesResponse])
+async def get_indicator_series(
+    code: str,
+    request: Request,
+    db: DB,
+    country: str = "US",
+) -> Envelope[SeriesResponse]:
+    """Fetch the historical time-series for a given indicator and country."""
+    service = IndicatorService(db)
+    series = await service.get_series(code, country)
+    return Envelope(data=series, meta=_meta(request))
