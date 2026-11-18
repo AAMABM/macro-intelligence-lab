@@ -10,10 +10,11 @@ from sqlalchemy import (
     DateTime,
     ForeignKey,
     Index,
+    Integer,
     Numeric,
-    SmallInteger,
     func,
     text,
+    desc,
 )
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -25,15 +26,15 @@ class IndicatorObservation(Base):
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     indicator_id: Mapped[int] = mapped_column(
-        SmallInteger, ForeignKey("indicators.id", ondelete="RESTRICT"), nullable=False
+        Integer, ForeignKey("indicators.id", ondelete="RESTRICT"), nullable=False
     )
     country_id: Mapped[int] = mapped_column(
-        SmallInteger, ForeignKey("countries.id", ondelete="RESTRICT"), nullable=False
+        Integer, ForeignKey("countries.id", ondelete="RESTRICT"), nullable=False
     )
     period: Mapped[date] = mapped_column(Date, nullable=False)
     period_end: Mapped[date | None] = mapped_column(Date)
     value: Mapped[Decimal] = mapped_column(Numeric(20, 6), nullable=False)
-    revision: Mapped[int] = mapped_column(SmallInteger, server_default="0", nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, server_default="0", nullable=False)
     is_latest: Mapped[bool] = mapped_column(
         Boolean, server_default=text("true"), nullable=False
     )
@@ -41,7 +42,7 @@ class IndicatorObservation(Base):
         Boolean, server_default=text("false"), nullable=False
     )
     source_id: Mapped[int] = mapped_column(
-        SmallInteger, ForeignKey("data_sources.id", ondelete="RESTRICT"), nullable=False
+        Integer, ForeignKey("data_sources.id", ondelete="RESTRICT"), nullable=False
     )
     source_ts: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     ingested_at: Mapped[datetime] = mapped_column(
@@ -65,6 +66,6 @@ class IndicatorObservation(Base):
             "revision",
             unique=True,
         ),
-        Index("ix_obs_country_indicator_period", "country_id", "indicator_id", "period"),
-        Index("ix_obs_indicator_period", "indicator_id", "period"),
+        Index("ix_obs_country_indicator_period", "country_id", "indicator_id", desc("period")),
+        Index("ix_obs_indicator_period", "indicator_id", desc("period")),
     )

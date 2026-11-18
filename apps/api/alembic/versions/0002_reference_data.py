@@ -34,7 +34,7 @@ def upgrade() -> None:
     # --- regions ------------------------------------------------------
     op.create_table(
         "regions",
-        sa.Column("id", sa.SmallInteger, primary_key=True, autoincrement=True),
+        sa.Column("id", sa.Integer, primary_key=True, autoincrement=True),
         sa.Column("code", sa.String(20), nullable=False),
         sa.Column("name", sa.String(80), nullable=False),
         sa.UniqueConstraint("code", name="uq_regions_code"),
@@ -46,19 +46,19 @@ def upgrade() -> None:
         sa.Column("code", sa.String(3), primary_key=True),
         sa.Column("name", sa.String(80), nullable=False),
         sa.Column("symbol", sa.String(8)),
-        sa.Column("decimals", sa.SmallInteger, server_default="2", nullable=False),
+        sa.Column("decimals", sa.Integer, server_default="2", nullable=False),
     )
 
     # --- countries ----------------------------------------------------
     op.create_table(
         "countries",
-        sa.Column("id", sa.SmallInteger, primary_key=True, autoincrement=True),
+        sa.Column("id", sa.Integer, primary_key=True, autoincrement=True),
         sa.Column("iso2", sa.String(2), nullable=False),
         sa.Column("iso3", sa.String(3), nullable=False),
         sa.Column("name", sa.String(120), nullable=False),
         sa.Column(
             "region_id",
-            sa.SmallInteger,
+            sa.Integer,
             sa.ForeignKey("regions.id", ondelete="RESTRICT"),
             nullable=True,
         ),
@@ -78,7 +78,7 @@ def upgrade() -> None:
     # --- data_sources -------------------------------------------------
     op.create_table(
         "data_sources",
-        sa.Column("id", sa.SmallInteger, primary_key=True, autoincrement=True),
+        sa.Column("id", sa.Integer, primary_key=True, autoincrement=True),
         sa.Column("code", sa.String(40), nullable=False),
         sa.Column("name", sa.String(120), nullable=False),
         sa.Column("homepage_url", sa.String(500)),
@@ -90,7 +90,7 @@ def upgrade() -> None:
     # --- indicators ---------------------------------------------------
     op.create_table(
         "indicators",
-        sa.Column("id", sa.SmallInteger, primary_key=True, autoincrement=True),
+        sa.Column("id", sa.Integer, primary_key=True, autoincrement=True),
         sa.Column("code", sa.String(40), nullable=False),
         sa.Column("name", sa.String(120), nullable=False),
         sa.Column("description", sa.Text),
@@ -99,7 +99,7 @@ def upgrade() -> None:
         sa.Column("category", indicator_category, nullable=False),
         sa.Column(
             "source_id",
-            sa.SmallInteger,
+            sa.Integer,
             sa.ForeignKey("data_sources.id", ondelete="RESTRICT"),
             nullable=True,
         ),

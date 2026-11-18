@@ -22,20 +22,20 @@ def upgrade() -> None:
         sa.Column("id", sa.BigInteger, primary_key=True, autoincrement=True),
         sa.Column(
             "indicator_id",
-            sa.SmallInteger,
+            sa.Integer,
             sa.ForeignKey("indicators.id", ondelete="RESTRICT"),
             nullable=False,
         ),
         sa.Column(
             "country_id",
-            sa.SmallInteger,
+            sa.Integer,
             sa.ForeignKey("countries.id", ondelete="RESTRICT"),
             nullable=False,
         ),
         sa.Column("period", sa.Date, nullable=False),
         sa.Column("period_end", sa.Date),
         sa.Column("value", sa.Numeric(20, 6), nullable=False),
-        sa.Column("revision", sa.SmallInteger, server_default="0", nullable=False),
+        sa.Column("revision", sa.Integer, server_default="0", nullable=False),
         sa.Column(
             "is_latest", sa.Boolean, server_default=sa.text("true"), nullable=False
         ),
@@ -44,7 +44,7 @@ def upgrade() -> None:
         ),
         sa.Column(
             "source_id",
-            sa.SmallInteger,
+            sa.Integer,
             sa.ForeignKey("data_sources.id", ondelete="RESTRICT"),
             nullable=False,
         ),
@@ -57,7 +57,6 @@ def upgrade() -> None:
         ),
     )
 
-    # Exactly one is_latest row per (indicator, country, period)
     op.create_index(
         "uq_obs_latest",
         "indicator_observations",
@@ -65,14 +64,12 @@ def upgrade() -> None:
         unique=True,
         postgresql_where=sa.text("is_latest"),
     )
-    # Uniqueness across revisions
     op.create_index(
         "uq_obs_revision",
         "indicator_observations",
         ["indicator_id", "country_id", "period", "revision"],
         unique=True,
     )
-    # Hot read paths
     op.create_index(
         "ix_obs_country_indicator_period",
         "indicator_observations",

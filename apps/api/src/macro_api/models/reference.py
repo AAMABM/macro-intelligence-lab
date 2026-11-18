@@ -4,14 +4,12 @@ from enum import StrEnum
 
 from sqlalchemy import (
     Boolean,
+    Enum as SAEnum,
     ForeignKey,
     Index,
-    SmallInteger,
+    Integer,
     String,
     Text,
-)
-from sqlalchemy import (
-    Enum as SAEnum,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -40,7 +38,7 @@ class IndicatorCategory(StrEnum):
 class Region(Base):
     __tablename__ = "regions"
 
-    id: Mapped[int] = mapped_column(SmallInteger, primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     code: Mapped[str] = mapped_column(String(20), unique=True, nullable=False)
     name: Mapped[str] = mapped_column(String(80), nullable=False)
 
@@ -53,7 +51,7 @@ class Currency(Base):
     code: Mapped[str] = mapped_column(String(3), primary_key=True)
     name: Mapped[str] = mapped_column(String(80), nullable=False)
     symbol: Mapped[str | None] = mapped_column(String(8))
-    decimals: Mapped[int] = mapped_column(SmallInteger, server_default="2", nullable=False)
+    decimals: Mapped[int] = mapped_column(Integer, server_default="2", nullable=False)
 
     countries: Mapped[list["Country"]] = relationship(back_populates="currency")
 
@@ -61,12 +59,12 @@ class Currency(Base):
 class Country(Base):
     __tablename__ = "countries"
 
-    id: Mapped[int] = mapped_column(SmallInteger, primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     iso2: Mapped[str] = mapped_column(String(2), unique=True, nullable=False)
     iso3: Mapped[str] = mapped_column(String(3), unique=True, nullable=False)
     name: Mapped[str] = mapped_column(String(120), nullable=False)
     region_id: Mapped[int | None] = mapped_column(
-        SmallInteger, ForeignKey("regions.id", ondelete="RESTRICT")
+        Integer, ForeignKey("regions.id", ondelete="RESTRICT")
     )
     currency_code: Mapped[str | None] = mapped_column(
         String(3), ForeignKey("currencies.code", ondelete="RESTRICT")
@@ -83,7 +81,7 @@ class Country(Base):
 class DataSource(Base):
     __tablename__ = "data_sources"
 
-    id: Mapped[int] = mapped_column(SmallInteger, primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     code: Mapped[str] = mapped_column(String(40), unique=True, nullable=False)
     name: Mapped[str] = mapped_column(String(120), nullable=False)
     homepage_url: Mapped[str | None] = mapped_column(String(500))
@@ -94,7 +92,7 @@ class DataSource(Base):
 class Indicator(Base):
     __tablename__ = "indicators"
 
-    id: Mapped[int] = mapped_column(SmallInteger, primary_key=True, autoincrement=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     code: Mapped[str] = mapped_column(String(40), unique=True, nullable=False)
     name: Mapped[str] = mapped_column(String(120), nullable=False)
     description: Mapped[str | None] = mapped_column(Text)
@@ -113,7 +111,7 @@ class Indicator(Base):
         nullable=False,
     )
     source_id: Mapped[int | None] = mapped_column(
-        SmallInteger, ForeignKey("data_sources.id", ondelete="RESTRICT")
+        Integer, ForeignKey("data_sources.id", ondelete="RESTRICT")
     )
     higher_is_better: Mapped[bool] = mapped_column(
         Boolean, server_default="true", nullable=False
