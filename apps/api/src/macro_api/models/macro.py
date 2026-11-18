@@ -12,9 +12,9 @@ from sqlalchemy import (
     Index,
     Integer,
     Numeric,
+    desc,
     func,
     text,
-    desc,
 )
 from sqlalchemy.orm import Mapped, mapped_column
 
