@@ -12,12 +12,30 @@ from macro_api.models.identity import (
     User,
     UserPreferences,
 )
+from macro_api.models.macro import IndicatorObservation
+from macro_api.models.reference import (
+    Country,
+    Currency,
+    DataSource,
+    Frequency,
+    Indicator,
+    IndicatorCategory,
+    Region,
+)
 
 __all__ = [
     "Base",
+    "Country",
+    "Currency",
+    "DataSource",
     "EmailVerificationToken",
+    "Frequency",
+    "Indicator",
+    "IndicatorCategory",
+    "IndicatorObservation",
     "PasswordResetToken",
     "RefreshToken",
+    "Region",
     "User",
     "UserPreferences",
 ]

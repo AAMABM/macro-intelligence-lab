@@ -40,6 +40,9 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    volumes:
+      - ../apps/api/alembic:/app/alembic
+      - ../apps/api/alembic.ini:/app/alembic.ini
     restart: "no"
 
   api:
