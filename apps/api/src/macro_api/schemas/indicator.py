@@ -1,5 +1,8 @@
 """Indicator schemas."""
 
+from datetime import date
+from decimal import Decimal
+
 from macro_api.schemas.common import CamelModel
 
 
@@ -25,3 +28,14 @@ class IndicatorDetail(CamelModel):
     higher_is_better: bool
     methodology_note: str | None = None
     is_active: bool
+
+
+class ObservationPoint(CamelModel):
+    period: date
+    value: Decimal
+
+
+class SeriesResponse(CamelModel):
+    indicator_code: str
+    country_iso2: str
+    points: list[ObservationPoint]
