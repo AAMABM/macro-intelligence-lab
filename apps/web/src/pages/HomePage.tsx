@@ -1,8 +1,22 @@
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { CountryCard } from "@/components/data/CountryCard";
+import { IndicatorRow } from "@/components/data/IndicatorRow";
+import { referenceApi } from "@/lib/reference";
 
 export function HomePage() {
+  const { data: countriesData, isLoading: loadingCountries } = useQuery({
+    queryKey: ["countries"],
+    queryFn: referenceApi.getCountries,
+  });
+
+  const { data: indicatorsData, isLoading: loadingIndicators } = useQuery({
+    queryKey: ["indicators"],
+    queryFn: referenceApi.getIndicators,
+  });
+
   return (
     <div className="mx-auto max-w-7xl px-6">
       {/* Hero */}
@@ -34,21 +48,54 @@ export function HomePage() {
 
         <Card className="min-h-[280px]">
           <div className="flex h-full min-h-[220px] flex-col items-center justify-center text-center">
-            <p className="text-sm font-medium text-text-secondary">
-              Featured chart
-            </p>
+            <p className="text-sm font-medium text-text-secondary">Featured chart</p>
             <p className="mt-2 max-w-xs text-xs text-text-muted">
-              Yield curve, CPI trajectory, and macro tiles will populate here
-              from live data in Sprint 2–3.
+              Yield curve and macro tiles will populate here in Sprint 3.
             </p>
           </div>
         </Card>
       </section>
 
+      {/* Live Data Sections */}
+      <section className="grid gap-6 py-12 md:grid-cols-2">
+        
+        {/* Countries */}
+        <Card title="Country Intelligence">
+          {loadingCountries ? (
+            <p className="text-sm text-text-muted animate-pulse">Loading countries...</p>
+          ) : (
+            <div className="grid gap-3">
+              {countriesData?.map((country) => (
+                <CountryCard key={country.iso2} country={country} />
+              ))}
+            </div>
+          )}
+        </Card>
+
+        {/* Indicators */}
+        <Card title="Macroeconomic Indicators">
+          {loadingIndicators ? (
+            <p className="text-sm text-text-muted animate-pulse">Loading indicators...</p>
+          ) : (
+            <div className="flex flex-col">
+              {indicatorsData?.slice(0, 6).map((indicator) => (
+                <IndicatorRow key={indicator.code} indicator={indicator} />
+              ))}
+              <div className="mt-4 text-center">
+                <Link to="/indicators" className="text-xs text-primary hover:underline">
+                  View all {indicatorsData?.length} indicators →
+                </Link>
+              </div>
+            </div>
+          )}
+        </Card>
+
+      </section>
+
       {/* Trust strip */}
       <section
         aria-label="Forecast track record"
-        className="border-y border-border py-5"
+        className="border-y border-border py-5 mt-8"
       >
         <div className="flex flex-col items-center gap-1 text-center sm:flex-row sm:justify-center sm:gap-6 sm:text-left">
           <p className="text-sm text-text-secondary">
@@ -75,21 +122,6 @@ export function HomePage() {
           The scorecard activates once the first forecasts are published in
           Sprint 4.
         </p>
-      </section>
-
-      {/* Placeholder sections — visible, labeled, not faked */}
-      <section className="grid gap-6 py-12 md:grid-cols-3">
-        {[
-          { title: "Global Macro Snapshot", sprint: "Sprint 3" },
-          { title: "Country Intelligence", sprint: "Sprint 4" },
-          { title: "Market Intelligence", sprint: "Sprint 3" },
-        ].map((item) => (
-          <Card key={item.title} title={item.title}>
-            <p className="text-sm text-text-muted">
-              Arriving in {item.sprint}. The data pipeline is being built.
-            </p>
-          </Card>
-        ))}
       </section>
 
       {/* Economist strip */}
