@@ -6,13 +6,12 @@ from fastapi import APIRouter, Request
 
 from macro_api.core.envelope import Envelope, Meta, Page, PageMeta
 from macro_api.routers.deps import DB
-from macro_api.schemas.indicator import IndicatorDetail, IndicatorSummary
-from macro_api.services.indicator_service import IndicatorService
 from macro_api.schemas.indicator import (
-    IndicatorDetail, 
-    IndicatorSummary, 
+    IndicatorDetail,
+    IndicatorSummary,
     SeriesResponse,
 )
+from macro_api.services.indicator_service import IndicatorService
 
 router = APIRouter(prefix="/indicators", tags=["indicators"])
 

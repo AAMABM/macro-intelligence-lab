@@ -1,8 +1,9 @@
 """Indicator schemas."""
 
-from macro_api.schemas.common import CamelModel
 from datetime import date
 from decimal import Decimal
+
+from macro_api.schemas.common import CamelModel
 
 
 class IndicatorSummary(CamelModel):

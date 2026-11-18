@@ -63,9 +63,9 @@ class IndicatorService:
             raise NotFoundError(f"Country {country_iso2} not found.")
 
         observations = await self.obs_repo.get_series(indicator.id, country.id)
-        
+
         points = [
-            ObservationPoint(period=obs.period, value=obs.value) 
+            ObservationPoint(period=obs.period, value=obs.value)
             for obs in observations
         ]
 

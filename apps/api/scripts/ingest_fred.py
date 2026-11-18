@@ -6,7 +6,7 @@ import sys
 from datetime import datetime
 
 import httpx
-from sqlalchemy import select, update
+from sqlalchemy import select
 
 from macro_api.core.db import dispose_engine, get_session_factory
 from macro_api.models.macro import IndicatorObservation
@@ -29,7 +29,7 @@ async def fetch_fred_data(series_id: str, api_key: str) -> list[dict]:
         "file_type": "json",
         "observation_start": "2015-01-01",  # Fetch the last ~10 years
     }
-    
+
     async with httpx.AsyncClient() as client:
         response = await client.get(url, params=params)
         response.raise_for_status()
@@ -47,21 +47,27 @@ async def main() -> int:
         # 1. Get US country ID and FRED source ID
         us_country = await session.scalar(select(Country).where(Country.iso2 == "US"))
         fred_source = await session.scalar(select(DataSource).where(DataSource.code == "FRED"))
-        
+
         if not us_country or not fred_source:
-            print("ERROR: Reference data (US country, FRED source) not found. Run seed_reference.py first.", file=sys.stderr)
+            print(
+                "ERROR: Reference data (US country, FRED source) not found. "
+                "Run seed_reference.py first.",
+                file=sys.stderr,
+            )
             return 1
 
         # 2. Loop through our target indicators
         for indicator_code, fred_id in FRED_SERIES.items():
-            indicator = await session.scalar(select(Indicator).where(Indicator.code == indicator_code))
+            indicator = await session.scalar(
+                select(Indicator).where(Indicator.code == indicator_code)
+            )
             if not indicator:
                 print(f"WARNING: Indicator {indicator_code} not found in DB. Skipping.")
                 continue
 
             print(f"Fetching {indicator_code} ({fred_id}) from FRED...")
             observations = await fetch_fred_data(fred_id, api_key)
-            
+
             # 3. Insert into the DB with vintage handling
             new_rows = 0
             for obs in observations:
@@ -78,15 +84,14 @@ async def main() -> int:
                         IndicatorObservation.indicator_id == indicator.id,
                         IndicatorObservation.country_id == us_country.id,
                         IndicatorObservation.period == period_date,
-                        IndicatorObservation.is_latest == True
-                    )
+                        IndicatorObservation.is_latest.is_(True)                    )
                 )
 
                 if existing:
                     # If it exists and the value hasn't changed, do nothing
                     if float(existing.value) == value:
                         continue
-                    
+
                     # If it changed (revision), mark the old one as not latest
                     existing.is_latest = False
                     revision_num = existing.revision + 1
