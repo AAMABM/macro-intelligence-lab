@@ -7,15 +7,27 @@ import { IndicatorRow } from "@/components/data/IndicatorRow";
 import { referenceApi } from "@/lib/reference";
 
 export function HomePage() {
-  const { data: countriesData, isLoading: loadingCountries } = useQuery({
+  const { 
+    data: countriesData, 
+    isLoading: loadingCountries, 
+    isError: errorCountries 
+  } = useQuery({
     queryKey: ["countries"],
     queryFn: referenceApi.getCountries,
   });
 
-  const { data: indicatorsData, isLoading: loadingIndicators } = useQuery({
+  const { 
+    data: indicatorsData, 
+    isLoading: loadingIndicators, 
+    isError: errorIndicators 
+  } = useQuery({
     queryKey: ["indicators"],
     queryFn: referenceApi.getIndicators,
   });
+
+  // Ensure we are dealing with arrays before mapping
+  const countries = Array.isArray(countriesData) ? countriesData : [];
+  const indicators = Array.isArray(indicatorsData) ? indicatorsData : [];
 
   return (
     <div className="mx-auto max-w-7xl px-6">
@@ -63,9 +75,11 @@ export function HomePage() {
         <Card title="Country Intelligence">
           {loadingCountries ? (
             <p className="text-sm text-text-muted animate-pulse">Loading countries...</p>
+          ) : errorCountries ? (
+            <p className="text-sm text-danger">Failed to load countries. Is the API running?</p>
           ) : (
             <div className="grid gap-3">
-              {countriesData?.map((country) => (
+              {countries.map((country) => (
                 <CountryCard key={country.iso2} country={country} />
               ))}
             </div>
@@ -76,14 +90,16 @@ export function HomePage() {
         <Card title="Macroeconomic Indicators">
           {loadingIndicators ? (
             <p className="text-sm text-text-muted animate-pulse">Loading indicators...</p>
+          ) : errorIndicators ? (
+            <p className="text-sm text-danger">Failed to load indicators. Is the API running?</p>
           ) : (
             <div className="flex flex-col">
-              {indicatorsData?.slice(0, 6).map((indicator) => (
+              {indicators.slice(0, 6).map((indicator) => (
                 <IndicatorRow key={indicator.code} indicator={indicator} />
               ))}
               <div className="mt-4 text-center">
                 <Link to="/indicators" className="text-xs text-primary hover:underline">
-                  View all {indicatorsData?.length} indicators →
+                  View all {indicators.length} indicators →
                 </Link>
               </div>
             </div>
@@ -118,10 +134,6 @@ export function HomePage() {
             Methodology →
           </Link>
         </div>
-        <p className="mt-2 text-center text-xs text-text-muted">
-          The scorecard activates once the first forecasts are published in
-          Sprint 4.
-        </p>
       </section>
 
       {/* Economist strip */}
