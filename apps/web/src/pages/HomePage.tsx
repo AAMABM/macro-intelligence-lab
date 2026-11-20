@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/Card";
 import { CountryCard } from "@/components/data/CountryCard";
 import { IndicatorRow } from "@/components/data/IndicatorRow";
 import { referenceApi } from "@/lib/reference";
+import { CpiChart } from "@/components/data/CpiChart";
 
 export function HomePage() {
   const { 
@@ -58,12 +59,9 @@ export function HomePage() {
           </div>
         </div>
 
-        <Card className="min-h-[280px]">
-          <div className="flex h-full min-h-[220px] flex-col items-center justify-center text-center">
-            <p className="text-sm font-medium text-text-secondary">Featured chart</p>
-            <p className="mt-2 max-w-xs text-xs text-text-muted">
-              Yield curve and macro tiles will populate here in Sprint 3.
-            </p>
+        <Card className="min-h-[280px] flex flex-col" title="US Consumer Price Index (CPI)">
+          <div className="flex-1 pt-2">
+            <CpiChart />
           </div>
         </Card>
       </section>

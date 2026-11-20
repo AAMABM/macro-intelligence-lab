@@ -37,3 +37,14 @@ export interface IndicatorSummary {
   frequency: string;
   category: string;
 }
+
+export interface ObservationPoint {
+  period: string;
+  value: string;
+}
+
+export interface SeriesResponse {
+  indicatorCode: string;
+  countryIso2: string;
+  points: ObservationPoint[];
+}
