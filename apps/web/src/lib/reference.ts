@@ -1,14 +1,13 @@
 import { apiRequest } from "./api";
-import type { CountrySummary, IndicatorSummary, SeriesResponse } from "@mil/types";
+import type { CountrySummary, IndicatorSummary, SeriesResponse, CountryDetail } from "@mil/types";
 
 export const referenceApi = {
-  getCountries: (): Promise<CountrySummary[]> =>
-    apiRequest<CountrySummary[]>("/countries"),
+  // ... keep the existing ones ...
+  getCountries: (): Promise<CountrySummary[]> => apiRequest<CountrySummary[]>("/countries"),
+  getIndicators: (): Promise<IndicatorSummary[]> => apiRequest<IndicatorSummary[]>("/indicators"),
+  getSeries: (code: string, country: string = "US"): Promise<SeriesResponse> => apiRequest<SeriesResponse>(`/indicators/${code}/series?country=${country}`),
 
-  getIndicators: (): Promise<IndicatorSummary[]> =>
-    apiRequest<IndicatorSummary[]>("/indicators"),
-
-  // Add this new function:
-  getSeries: (code: string, country: string = "US"): Promise<SeriesResponse> =>
-    apiRequest<SeriesResponse>(`/indicators/${code}/series?country=${country}`),
+  // Add this:
+  getCountryDetail: (iso2: string): Promise<CountryDetail> =>
+    apiRequest<CountryDetail>(`/countries/${iso2}`),
 };

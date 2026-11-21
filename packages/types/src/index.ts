@@ -48,3 +48,16 @@ export interface SeriesResponse {
   countryIso2: string;
   points: ObservationPoint[];
 }
+
+export interface CountryDetail {
+  id: number;
+  iso2: string;
+  iso3: string;
+  name: string;
+  flagEmoji: string | null;
+  regionCode: string | null;
+  regionName: string | null;
+  currencyCode: string | null;
+  currencyName: string | null;
+  isActive: boolean;
+}

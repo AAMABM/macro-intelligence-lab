@@ -4,29 +4,20 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { CountryCard } from "@/components/data/CountryCard";
 import { IndicatorRow } from "@/components/data/IndicatorRow";
+import { MacroChart } from "@/components/data/MacroChart"; // Changed from CpiChart
 import { referenceApi } from "@/lib/reference";
-import { CpiChart } from "@/components/data/CpiChart";
 
 export function HomePage() {
-  const { 
-    data: countriesData, 
-    isLoading: loadingCountries, 
-    isError: errorCountries 
-  } = useQuery({
+  const { data: countriesData, isLoading: loadingCountries, isError: errorCountries } = useQuery({
     queryKey: ["countries"],
     queryFn: referenceApi.getCountries,
   });
 
-  const { 
-    data: indicatorsData, 
-    isLoading: loadingIndicators, 
-    isError: errorIndicators 
-  } = useQuery({
+  const { data: indicatorsData, isLoading: loadingIndicators, isError: errorIndicators } = useQuery({
     queryKey: ["indicators"],
     queryFn: referenceApi.getIndicators,
   });
 
-  // Ensure we are dealing with arrays before mapping
   const countries = Array.isArray(countriesData) ? countriesData : [];
   const indicators = Array.isArray(indicatorsData) ? indicatorsData : [];
 
@@ -50,10 +41,10 @@ export function HomePage() {
             and country risk. Every forecast is scored in public.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Button disabled title="Weekly outlook publishing starts in Sprint 4">
+            <Button disabled title="Weekly outlook publishing starts in Sprint 7">
               Read the weekly outlook →
             </Button>
-            <Button variant="secondary" disabled title="Terminal opens in Sprint 4">
+            <Button variant="secondary" disabled title="Terminal opens in Sprint 8">
               Enter the terminal
             </Button>
           </div>
@@ -61,7 +52,8 @@ export function HomePage() {
 
         <Card className="min-h-[280px] flex flex-col" title="US Consumer Price Index (CPI)">
           <div className="flex-1 pt-2">
-            <CpiChart />
+            {/* Changed to use the new MacroChart component */}
+            <MacroChart indicatorCode="CPI_YOY" countryIso2="US" />
           </div>
         </Card>
       </section>
@@ -74,11 +66,13 @@ export function HomePage() {
           {loadingCountries ? (
             <p className="text-sm text-text-muted animate-pulse">Loading countries...</p>
           ) : errorCountries ? (
-            <p className="text-sm text-danger">Failed to load countries. Is the API running?</p>
+            <p className="text-sm text-danger">Failed to load countries.</p>
           ) : (
             <div className="grid gap-3">
               {countries.map((country) => (
-                <CountryCard key={country.iso2} country={country} />
+                <Link key={country.iso2} to={`/countries/${country.iso2}`} className="transition-transform hover:-translate-y-1">
+                  <CountryCard country={country} />
+                </Link>
               ))}
             </div>
           )}
@@ -89,13 +83,14 @@ export function HomePage() {
           {loadingIndicators ? (
             <p className="text-sm text-text-muted animate-pulse">Loading indicators...</p>
           ) : errorIndicators ? (
-            <p className="text-sm text-danger">Failed to load indicators. Is the API running?</p>
+            <p className="text-sm text-danger">Failed to load indicators.</p>
           ) : (
             <div className="flex flex-col">
               {indicators.slice(0, 6).map((indicator) => (
                 <IndicatorRow key={indicator.code} indicator={indicator} />
               ))}
               <div className="mt-4 text-center">
+                {/* Link updated to go to the new /indicators page */}
                 <Link to="/indicators" className="text-xs text-primary hover:underline">
                   View all {indicators.length} indicators →
                 </Link>
@@ -113,22 +108,17 @@ export function HomePage() {
       >
         <div className="flex flex-col items-center gap-1 text-center sm:flex-row sm:justify-center sm:gap-6 sm:text-left">
           <p className="text-sm text-text-secondary">
-            <span className="font-mono tabular text-text-primary">0</span>{" "}
-            forecasts published
+            <span className="font-mono tabular text-text-primary">0</span> forecasts published
           </p>
           <span className="hidden text-border-strong sm:inline">·</span>
           <p className="text-sm text-text-secondary">
-            Median MAPE{" "}
-            <span className="font-mono tabular text-text-primary">—</span>
+            Median MAPE <span className="font-mono tabular text-text-primary">—</span>
           </p>
           <span className="hidden text-border-strong sm:inline">·</span>
           <p className="text-sm text-text-secondary">
             Scored against data vintages
           </p>
-          <Link
-            to="/methodology"
-            className="text-sm text-primary hover:underline"
-          >
+          <Link to="/methodology" className="text-sm text-primary hover:underline">
             Methodology →
           </Link>
         </div>
@@ -146,10 +136,7 @@ export function HomePage() {
             forecast track record will publish alongside the first research
             cycle.
           </p>
-          <Link
-            to="/about"
-            className="mt-4 inline-block text-sm text-primary hover:underline"
-          >
+          <Link to="/about" className="mt-4 inline-block text-sm text-primary hover:underline">
             Learn more →
           </Link>
         </div>
