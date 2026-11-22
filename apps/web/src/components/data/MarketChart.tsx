@@ -42,15 +42,26 @@ export function MarketChart({ symbol, color = "#10B981" }: MarketChartProps) {
           ]}
           layout={{
             autosize: true,
-            margin: { l: 40, r: 20, t: 10, b: 40 },
+            margin: { l: 70, r: 20, t: 20, b: 70 }, // <-- Bigger margins
             paper_bgcolor: "transparent",
             plot_bgcolor: "transparent",
             font: { color: "#94A3B8", size: 11, family: "Inter" },
-            xaxis: { showgrid: true, gridcolor: "#1E293B", zeroline: false, tickformat: "%b %y" },
-            yaxis: { showgrid: true, gridcolor: "#1E293B", zeroline: false },
+            xaxis: { 
+              showgrid: true, 
+              gridcolor: "#1E293B", 
+              zeroline: false, 
+              tickformat: "%b %y",
+              tickpadding: 10 
+            },
+            yaxis: { 
+              showgrid: true, 
+              gridcolor: "#1E293B", 
+              zeroline: false,
+              tickpadding: 10 
+            },
             hovermode: "x unified",
           }}
-          config={{ displayModeBar: false }}
+          config={{ displayModeBar: false, responsive: true }}
           style={{ width: "100%", height: "100%" }}
           useResizeHandler={true}
         />
