@@ -18,9 +18,9 @@ export function LoginPage() {
     event.preventDefault();
     try {
       await login(email, password);
-      navigate("/");
+      navigate("/"); // Redirect to home on success
     } catch {
-      /* error already stored in state */
+      // Error is handled by Zustand store
     }
   };
 

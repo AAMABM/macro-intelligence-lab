@@ -31,9 +31,9 @@ export function RegisterPage() {
 
     try {
       await register(email, password, displayName.trim());
-      navigate("/");
+      navigate("/"); // Redirect to home on success
     } catch {
-      /* error already stored in state */
+      // Error is handled by Zustand store
     }
   };
 

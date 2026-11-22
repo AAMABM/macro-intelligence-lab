@@ -50,9 +50,8 @@ export function HomePage() {
           </div>
         </div>
 
-        <Card className="min-h-[280px] flex flex-col" title="US Consumer Price Index (CPI)">
-          <div className="flex-1 pt-2">
-            {/* Changed to use the new MacroChart component */}
+        <Card className="h-[400px] flex flex-col overflow-hidden" title="US Consumer Price Index (CPI)">
+          <div className="flex-1 w-full relative">
             <MacroChart indicatorCode="CPI_YOY" countryIso2="US" />
           </div>
         </Card>
