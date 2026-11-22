@@ -1,9 +1,10 @@
-# apps/api/scripts/ingest_markets.py
+"""Fetch market data from Yahoo Finance and load into the database."""
+
 import asyncio
 import sys
 
 import yfinance as yf
-from curl_cffi import requests as curl_requests # Use curl_cffi
+from curl_cffi import requests as curl_requests  # Use curl_cffi
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
 
@@ -20,7 +21,8 @@ MARKET_SYMBOLS = {
 async def main() -> int:
     factory = get_session_factory()
     async with factory() as session:
-        # ... (Instrument insertion logic remains the same) ...
+
+        # 1. Ensure instruments exist
         for symbol, meta in MARKET_SYMBOLS.items():
             stmt = (
                 insert(MarketInstrument)
@@ -46,12 +48,13 @@ async def main() -> int:
         for symbol, instrument in instruments.items():
             print(f"Fetching market data for {symbol} ({instrument.name})...")
             try:
-                df = yf.download(symbol, period="2y", progress=False, session=chrome_session)
+                df = yf.download(
+                    symbol, period="2y", progress=False, session=chrome_session
+                )
             except Exception as e:
                 print(f"  -> ERROR downloading {symbol}: {e}")
                 continue
 
-            # ... (DataFrame parsing and insertion logic remains the same) ...
             if df.empty:
                 print(f"  -> WARNING: Returned no data for {symbol}.")
                 continue
@@ -59,11 +62,32 @@ async def main() -> int:
             new_rows = 0
             for date_idx, row in df.iterrows():
                 price_date = date_idx.date()
-                open_p = float(row["Open"].iloc[0]) if hasattr(row["Open"], "iloc") else float(row["Open"])
-                high_p = float(row["High"].iloc[0]) if hasattr(row["High"], "iloc") else float(row["High"])
-                low_p = float(row["Low"].iloc[0]) if hasattr(row["Low"], "iloc") else float(row["Low"])
-                close_p = float(row["Close"].iloc[0]) if hasattr(row["Close"], "iloc") else float(row["Close"])
-                vol = int(row["Volume"].iloc[0]) if hasattr(row["Volume"], "iloc") else int(row["Volume"])
+
+                open_p = (
+                    float(row["Open"].iloc[0])
+                    if hasattr(row["Open"], "iloc")
+                    else float(row["Open"])
+                )
+                high_p = (
+                    float(row["High"].iloc[0])
+                    if hasattr(row["High"], "iloc")
+                    else float(row["High"])
+                )
+                low_p = (
+                    float(row["Low"].iloc[0])
+                    if hasattr(row["Low"], "iloc")
+                    else float(row["Low"])
+                )
+                close_p = (
+                    float(row["Close"].iloc[0])
+                    if hasattr(row["Close"], "iloc")
+                    else float(row["Close"])
+                )
+                vol = (
+                    int(row["Volume"].iloc[0])
+                    if hasattr(row["Volume"], "iloc")
+                    else int(row["Volume"])
+                )
 
                 stmt = (
                     insert(MarketPriceDaily)
@@ -90,6 +114,7 @@ async def main() -> int:
     await dispose_engine()
     print("Market ingestion complete!")
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(asyncio.run(main()))

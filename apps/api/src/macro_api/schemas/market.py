@@ -4,6 +4,7 @@ from decimal import Decimal
 
 from macro_api.schemas.common import CamelModel
 
+
 class MarketInstrumentSummary(CamelModel):
     id: int
     symbol: str

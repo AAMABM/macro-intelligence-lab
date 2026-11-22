@@ -19,7 +19,7 @@ from macro_api.middleware.access_log import AccessLogMiddleware
 from macro_api.middleware.auth_context import AuthContextMiddleware
 from macro_api.middleware.error_handler import ErrorHandlerMiddleware
 from macro_api.middleware.request_id import RequestIDMiddleware
-from macro_api.routers import auth, countries, health, indicators, users, markets
+from macro_api.routers import auth, countries, health, indicators, markets, users
 
 
 def _envelope_response(

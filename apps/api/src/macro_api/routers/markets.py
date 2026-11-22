@@ -1,6 +1,8 @@
 """Market routes."""
 from datetime import UTC, datetime
+
 from fastapi import APIRouter, Request
+
 from macro_api.core.envelope import Envelope, Meta, Page, PageMeta
 from macro_api.routers.deps import DB
 from macro_api.schemas.market import MarketInstrumentSummary, MarketSeriesResponse
@@ -17,11 +19,17 @@ async def list_instruments(request: Request, db: DB) -> Page[MarketInstrumentSum
     items = await service.list_instruments()
     return Page(
         data=items,
-        meta=PageMeta(request_id=request.state.request_id, as_of=datetime.now(UTC), total=len(items)),
+        meta=PageMeta(
+            request_id=request.state.request_id,
+            as_of=datetime.now(UTC),
+            total=len(items),
+        ),
     )
 
 @router.get("/{symbol}/series", response_model=Envelope[MarketSeriesResponse])
-async def get_market_series(symbol: str, request: Request, db: DB) -> Envelope[MarketSeriesResponse]:
+async def get_market_series(
+    symbol: str, request: Request, db: DB
+) -> Envelope[MarketSeriesResponse]:
     service = MarketService(db)
     series = await service.get_series(symbol)
     return Envelope(data=series, meta=_meta(request))
