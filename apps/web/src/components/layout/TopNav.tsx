@@ -36,8 +36,13 @@ export function TopNav() {
         <div className="ml-auto flex items-center gap-3">
           {isAuthed ? (
             <>
+              <Link to="/terminal" className="hidden sm:block">
+                <Button size="sm" className="bg-primary/20 text-primary hover:bg-primary/30">
+                  Terminal
+                </Button>
+              </Link>
               <span className="hidden text-sm text-text-secondary sm:inline">
-                {user.displayName}
+                {user?.displayName}
               </span>
               <Button variant="secondary" size="sm" onClick={handleLogout}>
                 Sign out

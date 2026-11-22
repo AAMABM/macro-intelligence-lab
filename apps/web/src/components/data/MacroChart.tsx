@@ -34,8 +34,7 @@ export function MacroChart({ indicatorCode, countryIso2 = "US", title }: MacroCh
   const yValues = seriesData.points.map((p) => parseFloat(p.value));
 
   return (
-    // The relative wrapper that Plotly must obey
-    <div className="w-full h-full relative">
+    <div className="w-full h-full">
       <Plot
         data={[
           {
@@ -51,17 +50,25 @@ export function MacroChart({ indicatorCode, countryIso2 = "US", title }: MacroCh
         ]}
         layout={{
           autosize: true,
-          margin: { l: 40, r: 20, t: 10, b: 40 },
+          margin: { l: 50, r: 20, t: 20, b: 60 }, // Hardcoded margins
           paper_bgcolor: "transparent",
           plot_bgcolor: "transparent",
           font: { color: "#94A3B8", size: 11, family: "Inter" },
-          xaxis: { showgrid: true, gridcolor: "#1E293B", zeroline: false, tickformat: "%Y" },
-          yaxis: { showgrid: true, gridcolor: "#1E293B", zeroline: false },
+          xaxis: { 
+            showgrid: true, 
+            gridcolor: "#1E293B", 
+            zeroline: false, 
+            tickformat: "%Y" 
+          },
+          yaxis: { 
+            showgrid: true, 
+            gridcolor: "#1E293B", 
+            zeroline: false 
+          },
           hovermode: "x unified",
         }}
-        config={{ displayModeBar: false }}
-        // This absolute positioning is the magic trick for Plotly
-        style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
+        config={{ displayModeBar: false, responsive: true }}
+        style={{ width: "100%", height: "100%" }}
         useResizeHandler={true}
       />
     </div>
