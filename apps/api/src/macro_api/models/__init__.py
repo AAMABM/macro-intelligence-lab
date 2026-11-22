@@ -22,6 +22,7 @@ from macro_api.models.reference import (
     IndicatorCategory,
     Region,
 )
+from macro_api.models.market import MarketInstrument, MarketPriceDaily
 
 __all__ = [
     "Base",

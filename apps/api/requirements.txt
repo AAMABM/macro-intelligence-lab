@@ -11,3 +11,5 @@ email-validator==2.2.0
 python-multipart==0.0.17
 httpx==0.28.0
 zxcvbn==4.5.0
+yfinance>=0.2.59
+curl_cffi

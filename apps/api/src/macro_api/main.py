@@ -19,7 +19,7 @@ from macro_api.middleware.access_log import AccessLogMiddleware
 from macro_api.middleware.auth_context import AuthContextMiddleware
 from macro_api.middleware.error_handler import ErrorHandlerMiddleware
 from macro_api.middleware.request_id import RequestIDMiddleware
-from macro_api.routers import auth, countries, health, indicators, users
+from macro_api.routers import auth, countries, health, indicators, users, markets
 
 
 def _envelope_response(
@@ -102,6 +102,7 @@ def create_app() -> FastAPI:
     api.include_router(users.router, prefix="/v1")
     api.include_router(countries.router, prefix="/v1")
     api.include_router(indicators.router, prefix="/v1")
+    api.include_router(markets.router, prefix="/v1")
 
     app = FastAPI(
         title="Macro Intelligence Lab",

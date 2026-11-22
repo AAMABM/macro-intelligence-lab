@@ -1,5 +1,12 @@
 import { apiRequest } from "./api";
-import type { CountrySummary, IndicatorSummary, SeriesResponse, CountryDetail } from "@mil/types";
+import type { 
+  CountrySummary, 
+  IndicatorSummary, 
+  SeriesResponse, 
+  CountryDetail,
+  MarketInstrumentSummary,
+  MarketSeriesResponse
+} from "@mil/types";
 
 export const referenceApi = {
   // ... keep the existing ones ...
@@ -10,4 +17,9 @@ export const referenceApi = {
   // Add this:
   getCountryDetail: (iso2: string): Promise<CountryDetail> =>
     apiRequest<CountryDetail>(`/countries/${iso2}`),
+  getMarkets: (): Promise<MarketInstrumentSummary[]> =>
+    apiRequest<MarketInstrumentSummary[]>("/markets"),
+
+  getMarketSeries: (symbol: string): Promise<MarketSeriesResponse> =>
+    apiRequest<MarketSeriesResponse>(`/markets/${encodeURIComponent(symbol)}/series`),
 };
