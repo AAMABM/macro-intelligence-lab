@@ -34,46 +34,36 @@ export function MacroChart({ indicatorCode, countryIso2 = "US", title }: MacroCh
   const yValues = seriesData.points.map((p) => parseFloat(p.value));
 
   return (
-    // This relative/absolute trick forces Plotly to fill the flexbox exactly
-    <div className="flex-1 w-full relative">
-      <div className="absolute inset-0">
-        <Plot
-          data={[
-            {
-              x: xValues,
-              y: yValues,
-              type: "scatter",
-              mode: "lines",
-              name: title || indicatorCode,
-              line: { color: "#3B82F6", width: 2 },
-              fill: "tozeroy",
-              fillcolor: "rgba(59, 130, 246, 0.1)",
-            },
-          ]}
-          layout={{
-            autosize: true,
-            margin: { l: 40, r: 20, t: 10, b: 40 }, // Adjusted bottom margin for labels
-            paper_bgcolor: "transparent",
-            plot_bgcolor: "transparent",
-            font: { color: "#94A3B8", size: 11, family: "Inter" },
-            xaxis: {
-              showgrid: true,
-              gridcolor: "#1E293B",
-              zeroline: false,
-              tickformat: "%Y",
-            },
-            yaxis: {
-              showgrid: true,
-              gridcolor: "#1E293B",
-              zeroline: false,
-            },
-            hovermode: "x unified",
-          }}
-          config={{ displayModeBar: false }}
-          style={{ width: "100%", height: "100%" }}
-          useResizeHandler={true}
-        />
-      </div>
+    // The relative wrapper that Plotly must obey
+    <div className="w-full h-full relative">
+      <Plot
+        data={[
+          {
+            x: xValues,
+            y: yValues,
+            type: "scatter",
+            mode: "lines",
+            name: title || indicatorCode,
+            line: { color: "#3B82F6", width: 2 },
+            fill: "tozeroy",
+            fillcolor: "rgba(59, 130, 246, 0.1)",
+          },
+        ]}
+        layout={{
+          autosize: true,
+          margin: { l: 40, r: 20, t: 10, b: 40 },
+          paper_bgcolor: "transparent",
+          plot_bgcolor: "transparent",
+          font: { color: "#94A3B8", size: 11, family: "Inter" },
+          xaxis: { showgrid: true, gridcolor: "#1E293B", zeroline: false, tickformat: "%Y" },
+          yaxis: { showgrid: true, gridcolor: "#1E293B", zeroline: false },
+          hovermode: "x unified",
+        }}
+        config={{ displayModeBar: false }}
+        // This absolute positioning is the magic trick for Plotly
+        style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
+        useResizeHandler={true}
+      />
     </div>
   );
 }

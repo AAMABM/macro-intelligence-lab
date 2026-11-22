@@ -2,8 +2,7 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/Button";
 import { useAuthStore } from "@/stores/auth";
 
-const linkClass =
-  "text-sm text-text-secondary hover:text-text-primary transition-colors";
+const linkClass = "text-sm text-text-secondary hover:text-text-primary transition-colors";
 
 export function TopNav() {
   const navigate = useNavigate();
@@ -26,24 +25,12 @@ export function TopNav() {
         </Link>
 
         <nav className="hidden items-center gap-6 md:flex" aria-label="Primary">
-          <NavLink to="/research" className={linkClass}>
-            Research
-          </NavLink>
-          <NavLink to="/reports" className={linkClass}>
-            Reports
-          </NavLink>
-          <NavLink to="/countries" className={linkClass}>
-            Countries
-          </NavLink>
-          <NavLink to="/markets" className={linkClass}>
-            Markets
-          </NavLink>
-          <NavLink to="/methodology" className={linkClass}>
-            Methodology
-          </NavLink>
-          <NavLink to="/about" className={linkClass}>
-            About
-          </NavLink>
+          <NavLink to="/research" className={linkClass}>Research</NavLink>
+          <NavLink to="/reports" className={linkClass}>Reports</NavLink>
+          <NavLink to="/countries" className={linkClass}>Countries</NavLink>
+          <NavLink to="/markets" className={linkClass}>Markets</NavLink>
+          <NavLink to="/methodology" className={linkClass}>Methodology</NavLink>
+          <NavLink to="/about" className={linkClass}>About</NavLink>
         </nav>
 
         <div className="ml-auto flex items-center gap-3">
@@ -58,9 +45,7 @@ export function TopNav() {
             </>
           ) : (
             <>
-              <Link to="/login" className={linkClass}>
-                Sign in
-              </Link>
+              <Link to="/login" className={linkClass}>Sign in</Link>
               <Link to="/register">
                 <Button size="sm">Sign up</Button>
               </Link>
