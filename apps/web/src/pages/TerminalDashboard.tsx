@@ -20,20 +20,20 @@ export function TerminalDashboard() {
 
       <div className="grid gap-6 md:grid-cols-2">
         {/* Macro Chart */}
-        <Card className="h-[420px] flex flex-col overflow-hidden" title="US Inflation (CPI YoY)">
+        <Card className="h-[450px] flex flex-col" title="US Inflation (CPI YoY)">
           <div className="flex-1 w-full relative">
             <MacroChart indicatorCode="CPI_YOY" countryIso2="US" />
           </div>
         </Card>
 
         {/* Market Chart */}
-        <Card className="h-[420px] flex flex-col overflow-hidden" title="S&P 500 (2Y)">
+        <Card className="h-[450px] flex flex-col" title="S&P 500 (2Y)">
           <div className="flex-1 w-full relative">
             <MarketChart symbol="^GSPC" color="#10B981" />
           </div>
         </Card>
       </div>
-
+      
       <div className="grid gap-6 md:grid-cols-2">
         {/* Top Countries */}
         <Card title="Key Countries">
