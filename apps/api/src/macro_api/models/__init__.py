@@ -13,6 +13,7 @@ from macro_api.models.identity import (
     UserPreferences,
 )
 from macro_api.models.macro import IndicatorObservation
+from macro_api.models.market import MarketInstrument, MarketPriceDaily
 from macro_api.models.reference import (
     Country,
     Currency,
@@ -33,6 +34,8 @@ __all__ = [
     "Indicator",
     "IndicatorCategory",
     "IndicatorObservation",
+    "MarketInstrument",      # <-- Add this
+    "MarketPriceDaily",      # <-- Add this
     "PasswordResetToken",
     "RefreshToken",
     "Region",

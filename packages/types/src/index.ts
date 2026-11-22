@@ -61,3 +61,22 @@ export interface CountryDetail {
   currencyName: string | null;
   isActive: boolean;
 }
+
+export interface MarketInstrumentSummary {
+  id: number;
+  symbol: string;
+  name: string;
+  assetClass: string;
+  currencyCode: string | null;
+}
+
+export interface MarketPricePoint {
+  priceDate: string;
+  closePrice: string;
+}
+
+export interface MarketSeriesResponse {
+  symbol: string;
+  name: string;
+  points: MarketPricePoint[];
+}

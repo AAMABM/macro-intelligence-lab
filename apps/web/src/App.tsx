@@ -10,6 +10,7 @@ import { CountriesPage } from "./pages/CountriesPage";
 import { CountryDetailPage } from "./pages/CountryDetailPage";
 import { IndicatorsPage } from "./pages/IndicatorsPage";
 import { useAuthStore } from "./stores/auth";
+import { MarketsPage } from "./pages/MarketsPage";
 
 export default function App() {
   const initialize = useAuthStore((s) => s.initialize);
@@ -29,6 +30,7 @@ export default function App() {
         <Route path="/countries" element={<CountriesPage />} />
         <Route path="/countries/:iso2" element={<CountryDetailPage />} />
         <Route path="/indicators" element={<IndicatorsPage />} />
+        <Route path="/markets" element={<MarketsPage />} />
         {/* ------------------ */}
 
         <Route path="/404" element={<NotFoundPage />} />
