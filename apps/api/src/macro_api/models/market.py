@@ -13,6 +13,7 @@ from sqlalchemy import (
     Integer,
     Numeric,
     String,
+    UniqueConstraint,
     func,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -55,5 +56,8 @@ class MarketPriceDaily(Base):
     instrument: Mapped[MarketInstrument] = relationship(back_populates="prices")
 
     __table_args__ = (
+        UniqueConstraint(
+            "instrument_id", "price_date", name="uq_market_prices_instrument_date"
+        ),
         Index("ix_market_prices_instrument_date", "instrument_id", "price_date"),
     )
