@@ -3,6 +3,7 @@
 from collections.abc import AsyncIterator
 from typing import Any
 
+from sqlalchemy.engine.url import make_url
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -11,30 +12,31 @@ from sqlalchemy.ext.asyncio import (
 )
 
 from macro_api.config import get_settings
-from sqlalchemy.engine.url import make_url
+
 _engine: AsyncEngine | None = None
 _session_factory: async_sessionmaker[AsyncSession] | None = None
+
+
 def _build_engine() -> AsyncEngine:
     settings = get_settings()
     url_str = str(settings.database_url)
     parsed_url = make_url(url_str)
 
     connect_args: dict[str, Any] = {}
-    
+
     if parsed_url.drivername == "postgresql+asyncpg":
-        # Fix: Convert query to dict to make it mutable
         query = dict(parsed_url.query)
-        
+
         if "sslmode" in query:
             sslmode = query.pop("sslmode")
             if isinstance(sslmode, tuple):
                 sslmode = sslmode[0]
             if sslmode != "disable":
                 connect_args["ssl"] = sslmode
-                
+
         if "channel_binding" in query:
             query.pop("channel_binding")
-            
+
         parsed_url = parsed_url.set(query=query)
 
         connect_args["statement_cache_size"] = settings.database_statement_cache_size
@@ -49,6 +51,7 @@ def _build_engine() -> AsyncEngine:
         connect_args=connect_args,
         echo=False,
     )
+
 
 def get_engine() -> AsyncEngine:
     """Return the process-wide engine, creating it lazily."""
