@@ -68,4 +68,5 @@ ENV PYTHONPATH="/app/src:/app"
 RUN useradd --create-home --uid 10001 mil && chown -R mil:mil /app
 USER mil
 
-CMD ["python", "-c", "print('worker not implemented until Sprint 3'); exit 0"]
+# Listen on the port provided by Render, or default to 8000
+CMD ["sh", "-c", "uvicorn macro_api.main:app --host 0.0.0.0 --port ${PORT:-8000} --proxy-headers --forwarded-allow-ips='*'"]
