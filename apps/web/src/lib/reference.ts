@@ -6,6 +6,7 @@ import type {
   CountryDetail,
   MarketInstrumentSummary,
   MarketSeriesResponse
+  ForecastResponse
 } from "@mil/types";
 
 export const referenceApi = {
@@ -13,6 +14,7 @@ export const referenceApi = {
   getCountries: (): Promise<CountrySummary[]> => apiRequest<CountrySummary[]>("/countries"),
   getIndicators: (): Promise<IndicatorSummary[]> => apiRequest<IndicatorSummary[]>("/indicators"),
   getSeries: (code: string, country: string = "US"): Promise<SeriesResponse> => apiRequest<SeriesResponse>(`/indicators/${code}/series?country=${country}`),
+  getForecast: (code: string, country: string = "US"): Promise<ForecastResponse> => apiRequest<ForecastResponse>(`/indicators/${code}/forecast?country=${country}`),
 
   // Add this:
   getCountryDetail: (iso2: string): Promise<CountryDetail> =>

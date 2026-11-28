@@ -39,3 +39,15 @@ class SeriesResponse(CamelModel):
     indicator_code: str
     country_iso2: str
     points: list[ObservationPoint]
+
+class ForecastPoint(CamelModel):
+    period: date
+    yhat: float
+    yhat_lower: float
+    yhat_upper: float
+
+
+class ForecastResponse(CamelModel):
+    indicator_code: str
+    country_iso2: str
+    points: list[ForecastPoint]
