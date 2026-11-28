@@ -1,13 +1,5 @@
 import { apiRequest } from "./api";
-import type { 
-  CountrySummary, 
-  IndicatorSummary, 
-  SeriesResponse, 
-  CountryDetail,
-  MarketInstrumentSummary,
-  MarketSeriesResponse,
-  ForecastResponse
-} from "@mil/types";
+import type { CountrySummary, IndicatorSummary, SeriesResponse, CountryDetail, MarketInstrumentSummary, MarketSeriesResponse, ForecastResponse } from "@mil/types";
 
 export const referenceApi = {
   getCountries: (): Promise<CountrySummary[]> =>
