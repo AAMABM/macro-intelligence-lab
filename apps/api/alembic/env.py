@@ -5,7 +5,8 @@ from logging.config import fileConfig
 
 from alembic import context
 from sqlalchemy import pool
-from sqlalchemy.ext.asyncio import async_engine_from_config
+from sqlalchemy.engine.url import make_url
+from sqlalchemy.ext.asyncio import create_async_engine
 
 from macro_api.config import get_settings
 from macro_api.models import Base  # noqa: F401 — registers metadata
@@ -46,10 +47,31 @@ def _do_run_migrations(connection) -> None:
 
 
 async def run_migrations_online() -> None:
-    connectable = async_engine_from_config(
-        config.get_section(config.config_ini_section, {}),
-        prefix="sqlalchemy.",
+    url_str = config.get_main_option("sqlalchemy.url")
+    parsed_url = make_url(url_str)
+    
+    connect_args = {}
+    if parsed_url.drivername == "postgresql+asyncpg":
+        # Fix: Convert query to dict to make it mutable
+        query = dict(parsed_url.query)
+        
+        if "sslmode" in query:
+            sslmode = query.pop("sslmode")
+            if isinstance(sslmode, tuple):
+                sslmode = sslmode[0]
+            if sslmode != "disable":
+                connect_args["ssl"] = sslmode
+                
+        if "channel_binding" in query:
+            query.pop("channel_binding")
+            
+        # Reassign the modified query
+        parsed_url = parsed_url.set(query=query)
+
+    connectable = create_async_engine(
+        parsed_url,
         poolclass=pool.NullPool,
+        connect_args=connect_args,
     )
     async with connectable.connect() as connection:
         await connection.run_sync(_do_run_migrations)
