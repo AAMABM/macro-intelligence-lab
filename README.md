@@ -1,33 +1,27 @@
-# Macro Intelligence Lab
+# Macro Intelligence Lab 🌐
 
-**Economic Intelligence. Market Insight. Research-Driven Decisions.**
+**Live Demo:** [macro-intelligence-lab.vercel.app](https://macro-intelligence-lab.vercel.app)
+**API Endpoint:** [macro-intelligence-lab-api.onrender.com](https://macro-intelligence-lab-api.onrender.com)
 
-A macro research platform that publishes forecasts scored in public. The
-Sprint 1 foundation establishes the monorepo, backend scaffold, frontend
-scaffold, database connection, JWT authentication, Docker workflow, and CI.
+Macro Intelligence Lab is a full-stack Economic Intelligence Platform. It automates the collection of global economic and market data, serves it via a high-performance API, and provides a premium Bloomberg-style Research Terminal for analysts.
 
-## Sprint status
+## ✨ Features
+*   **Automated ETL Pipelines:** Nightly GitHub Actions connect to the Federal Reserve (FRED) and Yahoo Finance to ingest real-world macroeconomic (CPI, GDP, Unemployment) and market (S&P 500, Gold, FX) data.
+*   **Interactive Visualizations:** Beautiful, responsive Plotly time-series charts with dark-theme optimization.
+*   **Secure Research Terminal:** JWT-authenticated dashboard with protected routes, sidebar navigation, and customized layout.
+*   **Modern Architecture:** Fully containerized (Docker), deployed on cloud infrastructure (Vercel, Render, Neon), and backed by a CI/CD pipeline.
 
-- **Sprint 1 (current):** Foundation — monorepo, scaffolds, DB, auth, Docker, CI
-- Sprint 2: Data model — reference tables, indicators, observations
-- Sprint 3: ETL — FRED, World Bank, Yahoo ingestion
-- Sprint 4: Public site + terminal shell
-- ... see `docs/deliverables/`
+## 🛠️ Tech Stack
+*   **Frontend:** React 18, TypeScript, Vite, Tailwind CSS, Plotly.js, React Query, Zustand.
+*   **Backend:** Python 3.12, FastAPI, SQLAlchemy (Async), Alembic, Pydantic.
+*   **Database:** PostgreSQL (Neon Serverless Cloud).
+*   **DevOps:** Docker, GitHub Actions (CI/CD & Cron Jobs), Vercel, Render.
 
-## Quickstart
-
-```bash
-# 1. Clone
-git clone https://github.com/<you>/macro-intelligence-lab.git
-cd macro-intelligence-lab
-
-# 2. Copy environment
-cp .env.example .env
-
-# 3. Bring up the stack
-docker compose -f infra/docker-compose.yml up --build
-
-# 4. Once up:
-#    API:     http://localhost:8000/api/v1/health
-#    OpenAPI: http://localhost:8000/api/v1/openapi.json  (dev only)
-#    Web:     http://localhost:5173
+## 🏗️ Architecture
+```text
+[ Client (Vercel) ]  ──>  [ API (Render) ]  ──>  [ DB (Neon) ]
+       │                        │
+   React UI               FastAPI/Python
+       │                        │
+[ GitHub Actions ] ─────────────┘
+ (Nightly ETL Cron)
