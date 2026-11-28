@@ -3,7 +3,7 @@ name: macro-intelligence-lab
 x-api-env: &api-env
   MIL_ENV: development
   MIL_LOG_LEVEL: DEBUG
-  MIL_DATABASE_URL: postgresql+asyncpg://neondb_owner:npg_oR0hvk1yOLsV@ep-broad-heart-be04kpwm-pooler.c-9.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+  MIL_DATABASE_URL: ${MIL_DATABASE_URL}
   MIL_DATABASE_POOL_SIZE: "5"
   MIL_DATABASE_MAX_OVERFLOW: "5"
   MIL_DATABASE_STATEMENT_CACHE_SIZE: "100"
