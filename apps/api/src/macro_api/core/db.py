@@ -11,12 +11,9 @@ from sqlalchemy.ext.asyncio import (
 )
 
 from macro_api.config import get_settings
-
+from sqlalchemy.engine.url import make_url
 _engine: AsyncEngine | None = None
 _session_factory: async_sessionmaker[AsyncSession] | None = None
-
-from sqlalchemy.engine.url import make_url
-
 def _build_engine() -> AsyncEngine:
     settings = get_settings()
     url_str = str(settings.database_url)
