@@ -3,6 +3,7 @@
 from collections.abc import AsyncIterator
 from typing import Any
 
+from sqlalchemy.engine.url import make_url
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -18,12 +19,31 @@ _session_factory: async_sessionmaker[AsyncSession] | None = None
 
 def _build_engine() -> AsyncEngine:
     settings = get_settings()
-    connect_args: dict[str, Any] = {
-        "statement_cache_size": settings.database_statement_cache_size,
-        "server_settings": {"application_name": "mil-api"},
-    }
+    url_str = str(settings.database_url)
+    parsed_url = make_url(url_str)
+
+    connect_args: dict[str, Any] = {}
+
+    if parsed_url.drivername == "postgresql+asyncpg":
+        query = dict(parsed_url.query)
+
+        if "sslmode" in query:
+            sslmode = query.pop("sslmode")
+            if isinstance(sslmode, tuple):
+                sslmode = sslmode[0]
+            if sslmode != "disable":
+                connect_args["ssl"] = sslmode
+
+        if "channel_binding" in query:
+            query.pop("channel_binding")
+
+        parsed_url = parsed_url.set(query=query)
+
+        connect_args["statement_cache_size"] = settings.database_statement_cache_size
+        connect_args["server_settings"] = {"application_name": "mil-api"}
+
     return create_async_engine(
-        str(settings.database_url),
+        parsed_url,
         pool_size=settings.database_pool_size,
         max_overflow=settings.database_max_overflow,
         pool_pre_ping=settings.database_pool_pre_ping,

@@ -1,0 +1,44 @@
+name: Nightly ETL Pipeline
+
+on:
+  schedule:
+    - cron: '0 2 * * *' # Runs at 2:00 AM UTC every day
+  workflow_dispatch:    # Allows you to trigger it manually
+
+jobs:
+  ingest-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          cd apps/api
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+
+      - name: Run FRED Ingestion
+        env:
+          MIL_DATABASE_URL: ${{ secrets.MIL_DATABASE_URL }}
+          MIL_JWT_SECRET: ${{ secrets.MIL_JWT_SECRET }}
+          MIL_FRED_API_KEY: ${{ secrets.MIL_FRED_API_KEY }}
+        run: |
+          cd apps/api
+          python -m scripts.ingest_fred
+
+      - name: Run Market Ingestion
+        env:
+          MIL_DATABASE_URL: ${{ secrets.MIL_DATABASE_URL }}
+          MIL_JWT_SECRET: ${{ secrets.MIL_JWT_SECRET }}
+        run: |
+          cd apps/api
+          python -m scripts.ingest_markets
