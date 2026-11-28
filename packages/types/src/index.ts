@@ -80,3 +80,16 @@ export interface MarketSeriesResponse {
   name: string;
   points: MarketPricePoint[];
 }
+
+export interface ForecastPoint {
+  period: string;
+  yhat: number;
+  yhatLower: number;
+  yhatUpper: number;
+}
+
+export interface ForecastResponse {
+  indicatorCode: string;
+  countryIso2: string;
+  points: ForecastPoint[];
+}

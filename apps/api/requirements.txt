@@ -13,3 +13,6 @@ httpx==0.28.0
 zxcvbn==4.5.0
 yfinance>=0.2.59
 curl_cffi
+pandas>=2.2.0
+numpy>=1.26.0
+statsmodels>=0.14.1
